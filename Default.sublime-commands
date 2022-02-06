@@ -1,6 +1,16 @@
 [
     {
-        "caption": "gf integration: Run gf2",
+        "caption": "gf integration: (Re)start gf2",
         "command": "run_gf2"
+    },
+
+    {
+        "caption": "gf integration: Stop gf2",
+        "command": "stop_gf2"
+    },
+
+    {
+        "caption": "gf integration: Toggle breakpoint",
+        "command": "toggle_breakpoint"
     },
 ]
