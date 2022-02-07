@@ -2,9 +2,12 @@
 	// Command to run to launch gf2 
 	"gf2_cmd": "gf2",
 
-	// Path to gf2 control pipe. Has to match the path in ~/.config/gf2_config.ini
+	// Path to gf2 control pipe. Has to match the path in ~/.config/gf2_config.ini (or .project.gf)
 	"pipe_path": "/path/to/pipe.dat",
 
 	// Set either here or in a projects's global settings under the name gf-integration.working_directory
+	// If empty, will default to the active file's directory.
+	// Don't forget to add it to "trusted folders" in the global gf config ~/.config/gf2_config.ini to
+	// be able to load the local .project.gf
 	"working_directory": "",
 }

@@ -123,31 +123,38 @@ def launch_gf2():
     kill_gf2()
 
     settings = sublime.load_settings(settings_filename)
-    pipe_path = settings["pipe_path"]
 
+    pipe_path = settings["pipe_path"]
     if os.path.exists(pipe_path):
         os.remove(pipe_path)
 
     gf2_cmd = settings["gf2_cmd"]
 
-    try:
-        gf_working_dir = settings["working_directory"]
+    gf_working_dir = settings["working_directory"]
+    active_view = sublime.active_window().active_view()
+    if active_view is not None:
         try:
-            active_view = sublime.active_window().active_view()
-            if active_view is not None:
-                gf_working_dir = active_view.settings()[
-                    "gf-integration.working_directory"
-                ]
+            gf_working_dir = active_view.settings()["gf-integration.working_directory"]
         except Exception:
             pass
 
+        filepath = active_view.file_name()
+        if filepath is not None:
+            file_dir = os.path.dirname(filepath)
+            if not os.path.exists(gf_working_dir):
+                gf_working_dir = file_dir
+    try:
         if os.path.exists(gf_working_dir):
             global_state["gf2_process"] = subprocess.Popen(
                 [gf2_cmd], cwd=gf_working_dir
             )
         else:
             global_state["gf2_process"] = subprocess.Popen([gf2_cmd])
+    except Exception as error:
+        sublime.error_message(f"Couldn't start gf2 (command: {gf2_cmd}): {error}")
+        global_state["gf2_process"] = None
 
+    if gf2_is_running():
         sleep_inc = 0.1
         max_wait = 1
         waited = 0
@@ -162,9 +169,6 @@ def launch_gf2():
             kill_gf2()
         else:
             handle_view_change(sublime.active_window().active_view())
-
-    except Exception as error:
-        sublime.error_message(f"Couldn't start gf2 (command: {gf2_cmd}): {error}")
 
 
 def gf2_is_running():
@@ -197,6 +201,10 @@ def kill_gf2():
 def cleanup():
     global_state["gf2_process"] = None
     global_state["gf2_open_file"] = None
+    settings = sublime.load_settings(settings_filename)
+    pipe_path = settings["pipe_path"]
+    if os.path.exists(pipe_path):
+        os.remove(pipe_path)
 
 
 def get_breakpoint_line(view, event_window_x, event_window_y):
