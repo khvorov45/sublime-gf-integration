@@ -40,6 +40,7 @@ class RemoveAllBreakpointsCommand(sublime_plugin.WindowCommand):
         view = self.window.active_view()
         if view is not None:
             view.add_regions(breakpoint_region_name, [], "region.redish", "dot")
+        global_state["breakpoints"] = {}
         send_command_to_gf2("c d")
 
 
@@ -112,7 +113,9 @@ def toggle_breakpoint(view, line):
                 current_regions.append(region)
                 cmd = f"c b {filename}:{line}"
 
-            view.add_regions(breakpoint_region_name, current_regions, "region.redish", "dot")
+            view.add_regions(
+                breakpoint_region_name, current_regions, "region.redish", "dot"
+            )
             send_command_to_gf2(cmd)
 
 
@@ -175,13 +178,14 @@ def gf2_is_running():
 
 
 def send_command_to_gf2(cmd):
-    pipe_path = sublime.load_settings(settings_filename)["pipe_path"]
-    try:
-        pipe_handle = os.open(pipe_path, os.O_WRONLY)
-        os.write(pipe_handle, cmd.encode())
-        os.close(pipe_handle)
-    except Exception as error:
-        print(f"could not send command {cmd} to pipe {pipe_path}: {error}")
+    if gf2_is_running():
+        pipe_path = sublime.load_settings(settings_filename)["pipe_path"]
+        try:
+            pipe_handle = os.open(pipe_path, os.O_WRONLY)
+            os.write(pipe_handle, cmd.encode())
+            os.close(pipe_handle)
+        except Exception as error:
+            print(f"could not send command {cmd} to pipe {pipe_path}: {error}")
 
 
 def kill_gf2():
