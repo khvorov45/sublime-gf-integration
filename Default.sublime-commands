@@ -13,4 +13,9 @@
         "caption": "gf integration: Toggle breakpoint",
         "command": "toggle_breakpoint"
     },
+
+    {
+        "caption": "gf integration: Clear breakpoints",
+        "command": "remove_all_breakpoints"
+    },
 ]

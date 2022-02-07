@@ -5,6 +5,6 @@
 	// Path to gf2 control pipe. Has to match the path in ~/.config/gf2_config.ini
 	"pipe_path": "/path/to/pipe.dat",
 
-	// Path to .project.gf file. Set either here or in a projects's global settings under the name gf-integration.project_gf_path
-	"project_gf_path": "",
+	// Set either here or in a projects's global settings under the name gf-integration.working_directory
+	"working_directory": "",
 }
