@@ -15,7 +15,7 @@ control=/path/to/my-pipe-name.dat
 
 ```json
 {
-    "pipe_path": "/path/to/sublime/Packages/gf-integration",
+    "pipe_path": "/path/to/my-pipe-name.dat",
 }
 ```
 
