@@ -1,21 +1,21 @@
 [
     {
-        "caption": "gf integration: (Re)start gf2",
+        "caption": "gf-integration: (Re)start gf2",
         "command": "run_gf2"
     },
 
     {
-        "caption": "gf integration: Stop gf2",
+        "caption": "gf-integration: Stop gf2",
         "command": "stop_gf2"
     },
 
     {
-        "caption": "gf integration: Toggle breakpoint",
+        "caption": "gf-integration: Toggle breakpoint",
         "command": "toggle_breakpoint"
     },
 
     {
-        "caption": "gf integration: Clear breakpoints",
+        "caption": "gf-integration: Clear breakpoints",
         "command": "remove_all_breakpoints"
     },
 ]
