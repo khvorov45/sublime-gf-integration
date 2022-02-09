@@ -7,6 +7,7 @@ import time
 global_state = {
     "gf2_process": None,
     "gf2_open_file": None,
+    "dirty_files": {},
     "breakpoints": {},
 }
 
@@ -64,24 +65,33 @@ class CursorEventListener(sublime_plugin.EventListener):
 
 def handle_view_change(view):
 
-    if gf2_is_running() and not view.is_dirty() and view.file_name() is not None:
+    if gf2_is_running() and view.file_name() is not None: 
 
         cur_file = view.file_name()
-        if (
-            global_state["gf2_open_file"] is None
-            or global_state["gf2_open_file"] != cur_file
-        ):
-            cmd = f"f {cur_file}"
-            send_command_to_gf2(cmd)
-            global_state["gf2_open_file"] = cur_file
+        
+        if not view.is_dirty():
 
-        cursors_pos = view.sel()
-        if len(cursors_pos) == 1:
-            cursor_pos = cursors_pos[0]
-            if cursor_pos.a == cursor_pos.b:
-                line, col = view.rowcol(cursor_pos.a)
-                cmd = f"l {line + 1}"
+            if (
+                cur_file in global_state["dirty_files"] or
+                global_state["gf2_open_file"] is None
+                or global_state["gf2_open_file"] != cur_file
+            ):
+                cmd = f"f {cur_file}"
                 send_command_to_gf2(cmd)
+                global_state["gf2_open_file"] = cur_file
+                if cur_file in global_state["dirty_files"]:
+                    global_state["dirty_files"].pop(cur_file)
+
+            cursors_pos = view.sel()
+            if len(cursors_pos) == 1:
+                cursor_pos = cursors_pos[0]
+                if cursor_pos.a == cursor_pos.b:
+                    line, col = view.rowcol(cursor_pos.a)
+                    cmd = f"l {line + 1}"
+                    send_command_to_gf2(cmd)
+
+        else:
+            global_state["dirty_files"][cur_file] = True
 
 
 def toggle_breakpoint(view, line):
